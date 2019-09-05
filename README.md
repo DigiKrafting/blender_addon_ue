@@ -33,12 +33,12 @@ Should work in any version that supports FBX import.
 
     File names are derived from your blender file name.
 
-## \* Be sure to Set the __"Folders"__ in Preferences (See screenshot below)
+## Be sure to set the __"Folders"__ in Preferences (See screenshot below)
 
 - Source Root Folder (E.g "C:\Users\kye\Documents\Assets\DigiKrafting\Content\")
 - Destination Root Folder (E.g. "C:\Users\kye\Documents\Unreal Projects\DigiKrafting\Content\")
 
-\* The children/sub folders will be created automatically based on the blender file in your folder hierarchy. (E.g. "C:\Users\kye\Documents\Assets\DigiKrafting\Content\Meshes\Logo\Logo.blend" will create "C:\Users\kye\Documents\Unreal Projects\DigiKrafting\Content\Meshes\Logo\Logo.fbx")
+\* The children/sub folders will be created automatically based on the blender file location in your folder hierarchy. (E.g. "C:\Users\kye\Documents\Assets\DigiKrafting\Content\Meshes\Logo\Logo.blend" will create "C:\Users\kye\Documents\Unreal Projects\DigiKrafting\Content\Meshes\Logo\Logo.fbx")
 
 # Installation
 
