@@ -8,7 +8,7 @@ Bridge/Pipeline/Workflow export for Unreal Engine.
 # Features
 
 - One click FBX Export to UE
-- Option to Create Icon
+- Option to Create Icon (Useful for toolbar items/etc)
 - Option to Copy Textures Folder
 
 # Required Blender Version
@@ -16,6 +16,10 @@ Bridge/Pipeline/Workflow export for Unreal Engine.
 2.80.0
 
 \* Will likely work in previous versions but untested.
+
+# Required Unreal Version
+
+Should work in any version that supports FBX import.
 
 # IMPORTANT USAGE NOTES 
 
