@@ -3,13 +3,17 @@
 Bridge/Pipeline/Workflow export for Unreal Engine.
 
 \* WIP, I've created this addon to automate the export of meshes, create icons for weapons/items/etc and copy textures.
-\* I am planning to create an Unreal Editor Plugin to assign the imported textures (I'm getting over assigning the textures manually).
 
 # Features
 
 - One click FBX Export to UE
 - Option to Create Icon (Useful for toolbar items/etc)
 - Option to Copy Textures Folder
+
+# Roadmap
+
+- Create an Unreal Editor Plugin to assign the imported textures (I'm getting over assigning the textures manually).
+- Utilise a json file in the root folder for a project based preferences setup instead of current addon preferences.
 
 # Required Blender Version
 
