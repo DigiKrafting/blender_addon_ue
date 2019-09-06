@@ -9,12 +9,11 @@ Bridge/Pipeline/Workflow export for Unreal Engine.
 - One click FBX Export to UE
 - Option to Create Icon (Useful for toolbar items/etc)
 - Option to Copy Textures Folder
-- Option to override preferences (Useful for per project setup)
+- Option to override preferences (Useful for a per project setup)
 
 # Roadmap
 
 - Create an Unreal Editor Plugin to assign the imported textures (I'm getting over assigning the textures manually).
-- Utilise a json file in the root folder for a project based preferences setup instead of current addon preferences.
 
 # Required Blender Version
 
