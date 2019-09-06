@@ -9,7 +9,7 @@ Bridge/Pipeline/Workflow export for Unreal Engine.
 - One click FBX Export to UE
 - Option to Create Icon (Useful for toolbar items/etc)
 - Option to Copy Textures Folder
-- Option to override preferences (Useful for a per project setup)
+- Option to override preferences (Useful for a per project setup, see "Overriding Preferences" below)
 
 # Roadmap
 
@@ -42,6 +42,8 @@ Should work in any version that supports FBX import.
 
 # Overriding Preferences 
 
+/* This negates the need for a tool panel with config options if your working on several projects and preserves my beloved "one click" preference for my addons.
+
 Create a text file named blender_addon_ue.json in your source project folder, mesh folder or both for preferences for different model types, the addon will search recursively in reverse through the folder hierarchy back to the root folder of your drive for any "blender_addon_ue.json", so don't create it in "c:\blender_addon_ue.json" or "/blender_addon_ue.json".
 
 ### blender_addon_ue.json
@@ -72,7 +74,7 @@ For example you could have:
 }
 ~~~
 
-\* For a project based setup be sure to set at least "option_ue_src" and "option_ue_dst".
+\* For a per project based setup be sure to set at least "option_ue_src" and "option_ue_dst".
 
 # Installation
 
