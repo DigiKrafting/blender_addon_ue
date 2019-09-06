@@ -9,6 +9,7 @@ Bridge/Pipeline/Workflow export for Unreal Engine.
 - One click FBX Export to UE
 - Option to Create Icon (Useful for toolbar items/etc)
 - Option to Copy Textures Folder
+- Option to override preferences (Useful for per project setup)
 
 # Roadmap
 
@@ -39,6 +40,40 @@ Should work in any version that supports FBX import.
 - Destination Root Folder (E.g. "C:\Users\kye\Documents\Unreal Projects\DigiKrafting\Content\")
 
 \* The children/sub folders will be created automatically based on the blender file location in your folder hierarchy. (E.g. "C:\Users\kye\Documents\Assets\DigiKrafting\Content\Meshes\Logo\Logo.blend" will create "C:\Users\kye\Documents\Unreal Projects\DigiKrafting\Content\Meshes\Logo\Logo.fbx")
+
+# Override Preferences 
+
+Create a text file named blender_addon_ue.json in your source project folder, mesh folder or both for preferences for different model types, the addon will search recursively back to the root folder of your drive for any "blender_addon_ue.json", so don't create it in "c:\blender_addon_ue.json" or "/blender_addon_ue.json".
+
+### blender_addon_ue.json
+
+~~~
+{
+    "option_ue_src": "C:\\Users\\kye\\Documents\\Assets\\DigiKrafting\\Content\\",
+    "option_ue_dst": "C:\\Users\\kye\\Documents\\Unreal Projects\\DKS_Importer_Project\\Content\\",
+    "option_create_icon": true,
+    "option_override_camera": true,
+    "option_icon_resolution_x":64,
+    "option_icon_resolution_y":64,
+    "option_camera_location":{"x":11,"y":12,"z":13},
+    "option_camera_rotation":{"x":21,"y":22,"z":23},
+    "option_copy_textures": true
+}
+~~~
+
+\* Preferences that are ommitted will default to the addon preferences. 
+
+For example you could have:
+
+~~~
+{
+    "option_ue_src": "C:\\Users\\kye\\Documents\\Assets\\DigiKrafting\\Content\\",
+    "option_ue_dst": "C:\\Users\\kye\\Documents\\Unreal Projects\\DKS_Importer_Project\\Content\\",    
+    "option_copy_textures": false
+}
+~~~
+
+\* For a project based setup be sure to set at least "option_ue_src" and "option_ue_dst".
 
 # Installation
 

@@ -20,7 +20,7 @@ bl_info = {
         "name": "DKS UE",
         "description": "Export to UE",
         "author": "DigiKrafting.Studio",
-        "version": (0, 1, 0),
+        "version": (0, 2, 0),
         "blender": (2, 80, 0),
         "location": "Info Toolbar, File -> Export",
         "wiki_url":    "https://github.com/DigiKrafting/blender_addon_ue/wiki",
@@ -81,6 +81,10 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
                 name="Display Type",
                 default='Buttons',
         )
+        option_textures_folder : bpy.props.StringProperty(
+                name="Textures Folder Name",
+                default="Textures",
+        )        
         def draw(self, context):
 
                 layout = self.layout
@@ -89,6 +93,9 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
                 box.prop(self, 'option_display_type')
                 box.prop(self, 'option_ue_src')
                 box.prop(self, 'option_ue_dst')
+                box=layout.box()
+                box.prop(self, 'option_textures_folder')
+                box.label(text='Sub folder relative to the saved .blend file. * Do NOT include any "\\".',icon='INFO')
                 box=layout.box()
                 box.prop(self, 'option_create_icon')
                 box.prop(self, 'option_icon_resolution_x')

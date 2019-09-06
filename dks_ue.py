@@ -22,13 +22,19 @@ from subprocess import Popen
 from os import system, path, makedirs, sep
 import os, sys
 import distutils.dir_util
+import json
+from pathlib import Path as pathlib_path
+
+_preferences={};
 
 def dks_ue_get_export_path():
     
+    global _preferences
+
     _file_name = bpy.context.blend_data.filepath
     _file_path = _file_name[0:len(_file_name)-len(bpy.path.basename(_file_name))]
-    _file_sub = _file_path[len(bpy.context.preferences.addons["blender_addon_ue"].preferences.option_ue_src):]
-    _export_path = bpy.context.preferences.addons["blender_addon_ue"].preferences.option_ue_dst+_file_sub
+    _file_sub = _file_path[len(_preferences["option_ue_src"]):]
+    _export_path = _preferences["option_ue_dst"]+_file_sub
 
     if not path.exists(_export_path):
         makedirs(_export_path)
@@ -49,22 +55,23 @@ def dks_ue_filename(self, context):
 
 def screenshot(self, context):
     
+    global _preferences
+
     _object_name = bpy.path.basename(bpy.context.blend_data.filepath).replace('.blend','')
     _object_file = dks_ue_get_export_path() + _object_name + '_Icon.png'
-    
-    if bpy.context.preferences.addons[__package__].preferences.option_override_camera:
 
-        bpy.context.scene.camera.location = bpy.context.preferences.addons[__package__].preferences.option_camera_location
-        bpy.context.scene.camera.rotation_euler = bpy.context.preferences.addons[__package__].preferences.option_camera_rotation
+    if _preferences["option_override_camera"]:
 
+        bpy.context.scene.camera.location = _preferences["option_camera_location"]
+        bpy.context.scene.camera.rotation_euler = _preferences["option_camera_rotation"]
 
     bpy.ops.render.render(use_viewport=True)
 
     bpy.data.scenes["Scene"].render.filepath = _object_file
     bpy.context.scene.render.image_settings.file_format='PNG'
     bpy.context.scene.render.filepath = _object_file
-    bpy.context.scene.render.resolution_x = bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_x
-    bpy.context.scene.render.resolution_y = bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_y
+    bpy.context.scene.render.resolution_x = _preferences["option_icon_resolution_x"]
+    bpy.context.scene.render.resolution_y = _preferences["option_icon_resolution_y"]
     bpy.context.scene.render.resolution_percentage = 100
 
     bpy.context.scene.cycles.film_transparent = True
@@ -81,6 +88,22 @@ def dks_ue_fbx_export(self, context):
 
     return _export_file
 
+def dks_ue_folder_crawl(directory):
+    
+    found=""
+
+    path_check=os.path.join(directory, "blender_addon_ue.json")
+
+    if path.exists(path_check):
+        found=path_check
+    else:        
+        path_parent=pathlib_path(directory).parent
+        if path_parent!=directory:
+            found=dks_ue_folder_crawl(path_parent)
+    
+    return found
+#
+
 class dks_ue_export(bpy.types.Operator):
 
     bl_idname = "dks_ue.export"
@@ -88,15 +111,80 @@ class dks_ue_export(bpy.types.Operator):
     bl_description = "Export to UE"
 
     def execute(self, context):
+        
+        global _preferences
 
-        if bpy.context.preferences.addons[__package__].preferences.option_create_icon:
+        _file_name = bpy.context.blend_data.filepath
+        _file_path = _file_name[0:len(_file_name)-len(bpy.path.basename(_file_name))]
+        
+        _file_json=dks_ue_folder_crawl(_file_path)
+        
+        print("_file_json:",_file_json)
+
+        if _file_json!="":
+                
+            try:
+                with open(_file_json) as _file_json_data:
+                    _preferences = json.load(_file_json_data)
+            except Exception as e:
+                print("blender_addon_ue.json is invalid: ",str(e.reason))
+                return {'FINISHED'}
+            
+            if "option_ue_src" not in _preferences:
+                _preferences["option_ue_src"]=bpy.context.preferences.addons[__package__].preferences.option_ue_src
+            
+            if "option_ue_dst" not in _preferences:
+                _preferences["option_ue_dst"]=bpy.context.preferences.addons[__package__].preferences.option_ue_dst
+
+            if "option_create_icon" not in _preferences:
+                _preferences["option_create_icon"]=bpy.context.preferences.addons[__package__].preferences.option_create_icon
+
+            if "option_override_camera" not in _preferences:
+                _preferences["option_override_camera"]=bpy.context.preferences.addons[__package__].preferences.option_override_camera
+
+            if "option_icon_resolution_x" not in _preferences:
+                _preferences["option_icon_resolution_x"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_x
+
+            if "option_icon_resolution_y" not in _preferences:
+                _preferences["option_icon_resolution_y"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_y
+
+            if "option_camera_location" in _preferences:
+                _preferences["option_camera_location"]=(_preferences["option_camera_location"]["x"],_preferences["option_camera_location"]["y"],_preferences["option_camera_location"]["z"])
+            else:
+                _preferences["option_camera_location"] = bpy.context.preferences.addons[__package__].preferences.option_camera_location
+
+            if "option_camera_rotation" in _preferences:
+                _preferences["option_camera_rotation"]=(math.radians(_preferences["option_camera_rotation"]["x"]),math.radians(_preferences["option_camera_rotation"]["y"]),math.radians(_preferences["option_camera_rotation"]["z"]))
+            else:
+                _preferences["option_camera_rotation"] = (math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[0]),math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[1]),math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[2]))
+
+            if "option_create_icon" not in _preferences:
+                _preferences["option_create_icon"]=bpy.context.preferences.addons[__package__].preferences.option_create_icon
+
+            if "option_textures_folder" not in _preferences:
+                _preferences["option_textures_folder"]=bpy.context.preferences.addons[__package__].preferences.option_textures_folder
+
+        else:
+
+            _preferences["option_ue_src"]=bpy.context.preferences.addons[__package__].preferences.option_ue_src
+            _preferences["option_ue_dst"]=bpy.context.preferences.addons[__package__].preferences.option_ue_dst
+            _preferences["option_create_icon"]=bpy.context.preferences.addons[__package__].preferences.option_create_icon
+            _preferences["option_override_camera"]=bpy.context.preferences.addons[__package__].preferences.option_override_camera
+            _preferences["option_icon_resolution_x"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_x
+            _preferences["option_icon_resolution_y"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_y
+            _preferences["option_camera_location"] = bpy.context.preferences.addons[__package__].preferences.option_camera_location
+            _preferences["option_camera_rotation"] = (math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[0]),math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[1]),math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[2]))
+            _preferences["option_copy_textures"]=bpy.context.preferences.addons[__package__].preferences.option_copy_textures
+            _preferences["option_textures_folder"]=bpy.context.preferences.addons[__package__].preferences.option_textures_folder
+
+        if _preferences["option_create_icon"]:
 
             screenshot(self, context)
 
-        if bpy.context.preferences.addons[__package__].preferences.option_copy_textures:
+        if _preferences["option_copy_textures"]:
 
-            _path_textures_from = bpy.path.abspath('//') + "Textures" + sep
-            _path_textures_to = dks_ue_get_export_path() + "Textures" + sep
+            _path_textures_from = bpy.path.abspath('//') + _preferences["option_textures_folder"] + sep
+            _path_textures_to = dks_ue_get_export_path() + _preferences["option_textures_folder"] + sep
 
             if path.exists(_path_textures_from):
                 distutils.dir_util.copy_tree(_path_textures_from, _path_textures_to)
