@@ -2,7 +2,7 @@
 
 Bridge/Pipeline/Workflow export for Unreal Engine.
 
-\* WIP, I've created this addon to automate the export of meshes, create icons for weapons/items/etc and copy textures.
+\* WIP, I've created this addon to automate the export of meshes, automatically create icons for weapons/items/etc and copy textures.
 
 # Features
 
@@ -41,9 +41,9 @@ Should work in any version that supports FBX import.
 
 \* The children/sub folders will be created automatically based on the blender file location in your folder hierarchy. (E.g. "C:\Users\kye\Documents\Assets\DigiKrafting\Content\Meshes\Logo\Logo.blend" will create "C:\Users\kye\Documents\Unreal Projects\DigiKrafting\Content\Meshes\Logo\Logo.fbx")
 
-# Override Preferences 
+# Overriding Preferences 
 
-Create a text file named blender_addon_ue.json in your source project folder, mesh folder or both for preferences for different model types, the addon will search recursively back to the root folder of your drive for any "blender_addon_ue.json", so don't create it in "c:\blender_addon_ue.json" or "/blender_addon_ue.json".
+Create a text file named blender_addon_ue.json in your source project folder, mesh folder or both for preferences for different model types, the addon will search recursively in reverse through the folder hierarchy back to the root folder of your drive for any "blender_addon_ue.json", so don't create it in "c:\blender_addon_ue.json" or "/blender_addon_ue.json".
 
 ### blender_addon_ue.json
 
