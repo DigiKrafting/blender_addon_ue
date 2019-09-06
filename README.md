@@ -42,7 +42,7 @@ Should work in any version that supports FBX import.
 
 # Overriding Preferences 
 
-/* This negates the need for a tool panel with config options if your working on several projects and preserves my beloved "one click" preference for my addons.
+\* This negates the need for a tool panel with config options if your working on several projects and preserves my beloved "one click" preference for my addons.
 
 Create a text file named blender_addon_ue.json in your source project folder, mesh folder or both for preferences for different model types, the addon will search recursively in reverse through the folder hierarchy back to the root folder of your drive for any "blender_addon_ue.json", so don't create it in "c:\blender_addon_ue.json" or "/blender_addon_ue.json".
 
