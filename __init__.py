@@ -20,7 +20,7 @@ bl_info = {
         "name": "DKS UE",
         "description": "Export to UE",
         "author": "DigiKrafting.Studio",
-        "version": (0, 2, 0),
+        "version": (0, 3, 0),
         "blender": (2, 80, 0),
         "location": "Info Toolbar, File -> Export",
         "wiki_url":    "https://github.com/DigiKrafting/blender_addon_ue/wiki",
@@ -84,13 +84,19 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
         option_textures_folder : bpy.props.StringProperty(
                 name="Textures Folder Name",
                 default="Textures",
-        )        
+        )
+        option_ue_json : bpy.props.BoolProperty(
+                name="Create UE JSON",
+                default=False,
+        )                
         def draw(self, context):
 
                 layout = self.layout
 
                 box=layout.box()
                 box.prop(self, 'option_display_type')
+                box.prop(self, 'option_save_before_export')
+                box=layout.box()
                 box.prop(self, 'option_ue_src')
                 box.prop(self, 'option_ue_dst')
                 box=layout.box()
@@ -105,7 +111,9 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
                 box.prop(self, 'option_camera_rotation')
                 box=layout.box()
                 box.prop(self, 'option_copy_textures')
-                box.prop(self, 'option_save_before_export')
+                box=layout.box()
+                box.prop(self, 'option_ue_json')
+                box.label(text='Creates blender_addon_ue_data.json for UE Plugin".',icon='INFO')
 
 class dks_ue_menu(bpy.types.Menu):
 

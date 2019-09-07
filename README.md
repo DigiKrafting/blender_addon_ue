@@ -10,6 +10,7 @@ Bridge/Pipeline/Workflow export for Unreal Engine.
 - Option to Create Icon (Useful for toolbar items/etc)
 - Option to Copy Textures Folder
 - Option to override preferences (Useful for a per project setup, see "Overriding Preferences" below)
+- Option to create blender_addon_ue_data.json for UE Plugin (\* Testing UE Plugin, will release soon ;))
 
 # Roadmap
 
@@ -89,5 +90,9 @@ Installing an Addon in Blender
 - Click [Install Add-on from File..]
 
 # Screenshots
+## Blender
+![alt](/screenshots/ue_blender.png)
+## Unreal Editor
+![alt](/screenshots/ue_material_setup.png)
 ## Preferences
 ![alt](/screenshots/ue_prefs.png)
