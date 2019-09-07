@@ -20,7 +20,7 @@ bl_info = {
         "name": "DKS UE",
         "description": "Export to UE",
         "author": "DigiKrafting.Studio",
-        "version": (0, 3, 0),
+        "version": (0, 4, 0),
         "blender": (2, 80, 0),
         "location": "Info Toolbar, File -> Export",
         "wiki_url":    "https://github.com/DigiKrafting/blender_addon_ue/wiki",
@@ -113,7 +113,7 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
                 box.prop(self, 'option_copy_textures')
                 box=layout.box()
                 box.prop(self, 'option_ue_json')
-                box.label(text='Creates blender_addon_ue_data.json for UE Plugin".',icon='INFO')
+                box.label(text='Creates blender_addon_ue_data.json for UE Plugin.',icon='INFO')
 
 class dks_ue_menu(bpy.types.Menu):
 

@@ -1,6 +1,6 @@
 # Blender Addon UE
 
-Bridge/Pipeline/Workflow export for Unreal Engine.
+Blender Unreal Engine Exporter.
 
 \* WIP, I've created this addon to automate the export of meshes, automatically create icons for weapons/items/etc and copy textures.
 
@@ -11,10 +11,6 @@ Bridge/Pipeline/Workflow export for Unreal Engine.
 - Option to Copy Textures Folder
 - Option to override preferences (Useful for a per project setup, see "Overriding Preferences" below)
 - Option to create blender_addon_ue_data.json for UE Plugin https://github.com/DigiKrafting/ue_plugin_blender (* ALPHA)
-
-# Roadmap
-
-- Create an Unreal Editor Plugin to assign the imported textures (I'm getting over assigning the textures manually).
 
 # Required Blender Version
 

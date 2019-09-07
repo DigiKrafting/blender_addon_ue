@@ -48,20 +48,23 @@ def dks_ue_get_export_path():
 
     return _export_path
 
+def dks_ue_get_file_name():
+
+    return bpy.path.basename(bpy.context.blend_data.filepath).replace('.blend','')
+
 def dks_ue_filename(self, context):
 
-    _object_name = bpy.path.basename(bpy.context.blend_data.filepath).replace('.blend','')
+    _object_name = dks_ue_get_file_name()
     _export_path = dks_ue_get_export_path()
     _export_file = _export_path + _object_name + '.fbx'
  
     return _export_file
 
-
 def screenshot(self, context):
     
     global _preferences
 
-    _object_name = bpy.path.basename(bpy.context.blend_data.filepath).replace('.blend','')
+    _object_name = dks_ue_get_file_name()
     _object_file = dks_ue_get_export_path() + _object_name + '_Icon.png'
 
     if _preferences["option_override_camera"]:
@@ -106,10 +109,6 @@ def dks_ue_folder_crawl(directory):
             found=dks_ue_folder_crawl(path_parent)
     
     return found
-
-def dks_ue_get_file_name():
-
-    return bpy.path.basename(bpy.context.blend_data.filepath).replace('.blend','')
 
 def dks_ue_get_texture_file(texture_path,mesh_name,mat_name,texture_name,texture_ext):
 
@@ -249,9 +248,10 @@ class dks_ue_export(bpy.types.Operator):
                         _file_ORM = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'OcclusionRoughnessMetallic',_texture_ext)
                         _file_Opacity = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Opacity',_texture_ext)
                         _file_Normal = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Normal',_texture_ext)
-                        if _file_Base_Color=="":
+                        if _file_Normal=="":
                             _file_Normal = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Normal_OpenGL',_texture_ext)
-                        
+                        _file_Emissive = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Emissive',_texture_ext)
+
                         _material_data['base_color']=_file_Base_Color[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
                         _material_data['normal']=_file_Normal[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
                         _material_data['orm']=_file_ORM[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
@@ -259,6 +259,7 @@ class dks_ue_export(bpy.types.Operator):
                         _material_data['ambient_occlusion']=_file_Ambient_occlusion[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
                         _material_data['metallic']=_file_Metallic[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
                         _material_data['roughness']=_file_Roughness[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
+                        _material_data['emissive']=_file_Emissive[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
                         
                         blender_data['materials'].append(_material_data)
             
