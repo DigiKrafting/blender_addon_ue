@@ -10,7 +10,7 @@ Blender Unreal Engine Exporter.
 - Option to Create Icon (Useful for toolbar items/etc)
 - Option to Copy Textures Folder
 - Option to override preferences (Useful for a per project setup, see "Overriding Preferences" below)
-- Option to create blender_addon_ue_data.json for UE Plugin https://github.com/DigiKrafting/ue_plugin_blender (* ALPHA)
+- Option to create a "{fbx_file_name}.bjd" for the UE Plugin https://github.com/DigiKrafting/ue_plugin_blender (* ALPHA)
 
 # Required Blender Version
 
