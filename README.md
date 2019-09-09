@@ -92,3 +92,5 @@ Installing an Addon in Blender
 ![alt](/screenshots/ue_material_setup.png)
 ## Preferences
 ![alt](/screenshots/ue_prefs.png)
+## Preferences (UE)
+![alt](/screenshots/ue_prefs_ue.png)

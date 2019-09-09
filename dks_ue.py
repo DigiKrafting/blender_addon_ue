@@ -125,6 +125,99 @@ def dks_ue_get_texture_file(texture_path,mesh_name,mat_name,texture_name,texture
         else:
             return ""
 
+def dks_ue_create_bjd(self, context):
+
+    global _preferences
+
+    blender_data = {}
+
+    blender_data['path']=dks_ue_get_export_sub().replace("\\","/")
+    
+    blender_data['options'] = {}
+    
+    blender_data['options']['ImportMesh']=bpy.context.preferences.addons[__package__].preferences.ue_ImportMesh;
+    blender_data['options']['ImportMaterials']=bpy.context.preferences.addons[__package__].preferences.ue_ImportMaterials;
+    blender_data['options']['ImportAnimations']=bpy.context.preferences.addons[__package__].preferences.ue_ImportAnimations;
+    blender_data['options']['CreatePhysicsAsset']=bpy.context.preferences.addons[__package__].preferences.ue_CreatePhysicsAsset;
+    blender_data['options']['AutoComputeLodDistances']=bpy.context.preferences.addons[__package__].preferences.ue_AutoComputeLodDistances;
+    
+    blender_data['options']['static_mesh']={}
+    blender_data['options']['static_mesh']['NormalImportMethod']=bpy.context.preferences.addons[__package__].preferences.ue_static_mesh_NormalImportMethod;
+    blender_data['options']['static_mesh']['ImportMeshLODs']=bpy.context.preferences.addons[__package__].preferences.ue_static_mesh_ImportMeshLODs;
+    blender_data['options']['static_mesh']['CombineMeshes']=bpy.context.preferences.addons[__package__].preferences.ue_static_mesh_CombineMeshes;
+    blender_data['options']['static_mesh']['AutoGenerateCollision']=bpy.context.preferences.addons[__package__].preferences.ue_static_mesh_AutoGenerateCollision;
+    
+    blender_data['options']['skeletal_mesh']={}
+    blender_data['options']['skeletal_mesh']['NormalImportMethod']=bpy.context.preferences.addons[__package__].preferences.ue_skeletal_mesh_NormalImportMethod;
+    blender_data['options']['skeletal_mesh']['ImportMeshLODs']=bpy.context.preferences.addons[__package__].preferences.ue_skeletal_mesh_ImportMeshLODs;
+    blender_data['options']['skeletal_mesh']['UseT0AsRefPose']=bpy.context.preferences.addons[__package__].preferences.ue_skeletal_mesh_UseT0AsRefPose;
+    blender_data['options']['skeletal_mesh']['PreserveSmoothingGroups']=bpy.context.preferences.addons[__package__].preferences.ue_skeletal_mesh_PreserveSmoothingGroups;
+    blender_data['options']['skeletal_mesh']['ImportMorphTargets']=bpy.context.preferences.addons[__package__].preferences.ue_skeletal_mesh_ImportMorphTargets;
+    
+    blender_data['options']['animation']={}
+    blender_data['options']['animation']['animation_length']=bpy.context.preferences.addons[__package__].preferences.ue_animation_animation_length;
+    blender_data['options']['animation']['frame_range_min']=bpy.context.preferences.addons[__package__].preferences.ue_animation_frame_range_min;
+    blender_data['options']['animation']['frame_range_max']=bpy.context.preferences.addons[__package__].preferences.ue_animation_frame_range_max;
+    blender_data['options']['animation']['ImportMeshesInBoneHierarchy']=bpy.context.preferences.addons[__package__].preferences.ue_animation_ImportMeshesInBoneHierarchy;
+    blender_data['options']['animation']['UseDefaultSampleRate']=bpy.context.preferences.addons[__package__].preferences.ue_animation_UseDefaultSampleRate;
+    blender_data['options']['animation']['CustomSampleRate']=bpy.context.preferences.addons[__package__].preferences.ue_animation_CustomSampleRate;
+    blender_data['options']['animation']['ConvertScene']=bpy.context.preferences.addons[__package__].preferences.ue_animation_ConvertScene;
+
+    blender_data['materials'] = []
+
+    if _preferences["option_copy_textures"]:
+
+        _objects = bpy.context.scene.objects
+        _texture_ext="png"
+
+        _path_textures_from = bpy.path.abspath('//') + _preferences["option_textures_folder"] + sep
+        _path_textures_to = dks_ue_get_export_path() + _preferences["option_textures_folder"] + sep
+
+        for _obj in _objects:
+
+            if _obj.type=='MESH':
+
+                _obj_name = _obj.name
+
+                _materials = _obj.data.materials
+
+                for _material in _materials:
+
+                    _material_name = _material.name
+                    
+                    _material_data = {}
+                    _material_data["name"]=_material_name
+
+                    _file_Base_Color = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Base_Color',_texture_ext)
+                    if _file_Base_Color=="":
+                        _file_Base_Color = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'BaseColor',_texture_ext)
+                    _file_Ambient_occlusion = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Ambient_occlusion',_texture_ext)
+                    _file_Metallic = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Metallic',_texture_ext)
+                    _file_Roughness = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Roughness',_texture_ext)
+                    _file_ORM = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'OcclusionRoughnessMetallic',_texture_ext)
+                    _file_Opacity = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Opacity',_texture_ext)
+                    _file_Normal = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Normal',_texture_ext)
+                    if _file_Normal=="":
+                        _file_Normal = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Normal_OpenGL',_texture_ext)
+                    _file_Emissive = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Emissive',_texture_ext)
+
+                    _material_data['base_color']=_file_Base_Color[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
+                    _material_data['normal']=_file_Normal[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
+                    _material_data['orm']=_file_ORM[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
+                    _material_data['opacity']=_file_Opacity[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
+                    _material_data['ambient_occlusion']=_file_Ambient_occlusion[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
+                    _material_data['metallic']=_file_Metallic[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
+                    _material_data['roughness']=_file_Roughness[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
+                    _material_data['emissive']=_file_Emissive[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
+                    
+                    blender_data['materials'].append(_material_data)
+    
+    json_data = json.dumps(blender_data, sort_keys=False, indent=3)
+    json_data_filename = dks_ue_filename().replace(".fbx",".bjd")
+    
+    with open(json_data_filename, 'w') as f:
+        json.dump(blender_data, f)
+
 class dks_ue_export(bpy.types.Operator):
 
     bl_idname = "dks_ue.export"
@@ -217,63 +310,9 @@ class dks_ue_export(bpy.types.Operator):
             if path.exists(_path_textures_from):
                 dir_util.copy_tree(_path_textures_from, _path_textures_to)
 
-            blender_data = {}
-            blender_data['path']=dks_ue_get_export_sub().replace("\\","/")
-            blender_data['options'] = {}
-            
-            blender_data['options']['ImportMaterials']=True;
-            blender_data['options']['ImportAnimations']=True;
-            blender_data['options']['CreatePhysicsAsset']=True;
-            
-            blender_data['materials'] = []
+        if _preferences["option_ue_json"]:
 
-            _objects = bpy.context.scene.objects
-            _texture_ext="png"
-
-            for _obj in _objects:
-
-                if _obj.type=='MESH':
-
-                    _obj_name = _obj.name
-
-                    _materials = _obj.data.materials
-
-                    for _material in _materials:
-
-                        _material_name = _material.name
-                        
-                        _material_data = {}
-                        _material_data["name"]=_material_name
-
-                        _file_Base_Color = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Base_Color',_texture_ext)
-                        if _file_Base_Color=="":
-                            _file_Base_Color = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'BaseColor',_texture_ext)
-                        _file_Ambient_occlusion = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Ambient_occlusion',_texture_ext)
-                        _file_Metallic = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Metallic',_texture_ext)
-                        _file_Roughness = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Roughness',_texture_ext)
-                        _file_ORM = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'OcclusionRoughnessMetallic',_texture_ext)
-                        _file_Opacity = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Opacity',_texture_ext)
-                        _file_Normal = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Normal',_texture_ext)
-                        if _file_Normal=="":
-                            _file_Normal = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Normal_OpenGL',_texture_ext)
-                        _file_Emissive = dks_ue_get_texture_file(_path_textures_from,_obj_name,_material_name,'Emissive',_texture_ext)
-
-                        _material_data['base_color']=_file_Base_Color[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
-                        _material_data['normal']=_file_Normal[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
-                        _material_data['orm']=_file_ORM[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
-                        _material_data['opacity']=_file_Opacity[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
-                        _material_data['ambient_occlusion']=_file_Ambient_occlusion[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
-                        _material_data['metallic']=_file_Metallic[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
-                        _material_data['roughness']=_file_Roughness[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
-                        _material_data['emissive']=_file_Emissive[len(bpy.path.abspath('//')):].replace("\\","/").replace("."+_texture_ext,"")
-                        
-                        blender_data['materials'].append(_material_data)
-            
-            json_data = json.dumps(blender_data, sort_keys=False, indent=3)
-            json_data_filename = dks_ue_filename().replace(".fbx",".bjd")
-            
-            with open(json_data_filename, 'w') as f:
-                json.dump(blender_data, f)
+            dks_ue_create_bjd(self, context)
         
         return {'FINISHED'}
 
