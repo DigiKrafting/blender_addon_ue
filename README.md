@@ -104,4 +104,5 @@ Installing an Addon in Blender
 ## Preferences (UE)
 ![alt](/screenshots/ue_prefs_ue.png)
 ## Output Preferences Panel
-![alt](/screenshots/ue_blender_output.png)
+![alt](/screenshots/ue_blender_output_prefs.png)
+![alt](/screenshots/ue_blender_output_fbx.png)
