@@ -12,6 +12,10 @@ Blender Unreal Engine Exporter.
 - Option to override preferences (Useful for a per project setup, see "Overriding Preferences" below)
 - Option to create a "{fbx_file_name}.bjd" for the UE Plugin https://github.com/DigiKrafting/ue_plugin_blender (* ALPHA)
 
+# Roadmap
+
+- Recreate Blender Materials Nodes in Unreal Materials
+
 # Required Blender Version
 
 2.80.0
@@ -94,3 +98,5 @@ Installing an Addon in Blender
 ![alt](/screenshots/ue_prefs.png)
 ## Preferences (UE)
 ![alt](/screenshots/ue_prefs_ue.png)
+## Output Preferences Panel
+![alt](/screenshots/ue_blender_output.png)

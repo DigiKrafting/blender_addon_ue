@@ -20,7 +20,7 @@ bl_info = {
         "name": "DKS UE",
         "description": "Export to UE",
         "author": "DigiKrafting.Studio",
-        "version": (0, 6, 0),
+        "version": (0, 7, 0),
         "blender": (2, 80, 0),
         "location": "Info Toolbar, File -> Export",
         "wiki_url":    "https://github.com/DigiKrafting/blender_addon_ue/wiki",
@@ -118,7 +118,7 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
         # Static Mesh
 
         ue_static_mesh_NormalImportMethod : bpy.props.EnumProperty(
-                items=[('ComputeNormals', "ComputeNormals", "Compute Normals"),('ImportNormalsAndTangents', "ImportNormalsAndTangents", "Import Normals And Tangents"),('ImportNormals', "ImportNormals", "Import Normals"),],
+                items=[('ComputeNormals', "ComputeNormals", "Compute Normals", 1),('ImportNormalsAndTangents', "ImportNormalsAndTangents", "Import Normals And Tangents", 2),('ImportNormals', "ImportNormals", "Import Normals", 3),],
                 name="Normal Import Method",
                 default='ComputeNormals',
         )
@@ -138,7 +138,7 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
         # Skeletal Mesh
 
         ue_skeletal_mesh_NormalImportMethod : bpy.props.EnumProperty(
-                items=[('ComputeNormals', "ComputeNormals", "Compute Normals"),('ImportNormalsAndTangents', "ImportNormalsAndTangents", "Import Normals And Tangents"),('ImportNormals', "ImportNormals", "Import Normals"),],
+                items=[('ComputeNormals', "ComputeNormals", "Compute Normals", 1),('ImportNormalsAndTangents', "ImportNormalsAndTangents", "Import Normals And Tangents", 2),('ImportNormals', "ImportNormals", "Import Normals", 3),],
                 name="Normal Import Method",
                 default='ComputeNormals',
         )
@@ -161,16 +161,16 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
         
         # Animations
 
-        ue_animation_animation_length : bpy.props.EnumProperty(
-                items=[('AnimatedKey', "AnimatedKey", "Animated Key"),('ExportedTime', "ExportedTime", "Exported Time"),('SetRange', "SetRange", "Set Range"),],
-                name="Animation_Length",
+        ue_animation_AnimationLength : bpy.props.EnumProperty(
+                items=[('AnimatedKey', "AnimatedKey", "Animated Key", 1),('ExportedTime', "ExportedTime", "Exported Time", 2),('SetRange', "SetRange", "Set Range", 3),],
+                name="Animation Length",
                 default='ExportedTime',
         )
-        ue_animation_frame_range_min : bpy.props.IntProperty(
+        ue_animation_FrameRangeMin : bpy.props.IntProperty(
                 name="Frame Range Min",
                 default=0,
         )
-        ue_animation_frame_range_max : bpy.props.IntProperty(
+        ue_animation_FrameRangeMax : bpy.props.IntProperty(
                 name="Frame Range Max",
                 default=0,
         )
@@ -218,10 +218,8 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
 
                 box=layout.box()
                 box.prop(self, 'option_ue_json')
-                box.label(text='Creates a "{fbx_file_name}.bjd" for the UE Plugin.',icon='INFO')
                 
                 box_sub=box.box()
-                box_sub.label(text='UE JSON Settings',icon='RADIOBUT_ON')
                 box_sub.prop(self, 'ue_ImportMesh')
                 box_sub.prop(self, 'ue_ImportMaterials')
                 box_sub.prop(self, 'ue_ImportAnimations')
@@ -245,9 +243,9 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
 
                 box_sub=box.box()
                 box_sub.label(text='Animations',icon='RADIOBUT_ON')
-                box_sub.prop(self, 'ue_animation_animation_length')
-                box_sub.prop(self, 'ue_animation_frame_range_min')
-                box_sub.prop(self, 'ue_animation_frame_range_max')
+                box_sub.prop(self, 'ue_animation_AnimationLength')
+                box_sub.prop(self, 'ue_animation_FrameRangeMin')
+                box_sub.prop(self, 'ue_animation_FrameRangeMax')
                 box_sub.prop(self, 'ue_animation_ImportMeshesInBoneHierarchy')
                 box_sub.prop(self, 'ue_animation_UseDefaultSampleRate')
                 box_sub.prop(self, 'ue_animation_CustomSampleRate')
