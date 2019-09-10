@@ -11,7 +11,7 @@ Blender Unreal Engine Exporter.
 - Option to Copy Textures Folder
 - Option to override preferences (Useful for a per project setup, see "Overriding Preferences" below)
 - Option to create a "{fbx_file_name}.bjd" for the UE Plugin https://github.com/DigiKrafting/ue_plugin_blender (* ALPHA)
-- Preferences Panel for per blend file UE options in Properies->Output  (See "Output Preferences Panel" screenshot below).
+- Preferences Panel for per blend file UE options in [Properies]->[Output]->[UE Options] (See "Output Preferences Panel" screenshot below).
 
 # Roadmap
 
@@ -46,7 +46,11 @@ Should work in any version that supports FBX import.
 
 \* This negates the need for a tool panel with config options if your working on several projects and preserves my beloved "one click" preference for my addons.
 
-Create a text file named blender_addon_ue.json in your source project folder, mesh folder or both for preferences for different model types, the addon will search recursively in reverse through the folder hierarchy back to the root folder of your drive for any "blender_addon_ue.json", so don't create it in "c:\blender_addon_ue.json" or "/blender_addon_ue.json".
+1. Set desired options in [Properties]->[Output]->[UE Options], select a folder and click [Create "blender_addon_ue.json"].
+
+OR
+
+2. Create a text file named blender_addon_ue.json in your source project folder, mesh folder or both for preferences for different model types, the addon will search recursively in reverse through the folder hierarchy back to the root folder of your drive for any "blender_addon_ue.json", so don't create it in "c:\blender_addon_ue.json" or "/blender_addon_ue.json".
 
 ### blender_addon_ue.json
 

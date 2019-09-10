@@ -145,6 +145,7 @@ def dks_ue_create_bjd(self, context):
 
     blender_data = {}
 
+    blender_data['Auto']=_dks_ue_options.option_ue_auto
     blender_data['Path']=dks_ue_get_export_sub().replace("\\","/")
     
     blender_data['Options'] = {}
@@ -226,7 +227,6 @@ def dks_ue_create_bjd(self, context):
                     
                     blender_data['Materials'].append(_material_data)
     
-    json_data = json.dumps(blender_data, sort_keys=False, indent=3)
     json_data_filename = dks_ue_filename().replace(".fbx",".bjd")
     
     with open(json_data_filename, 'w') as f:
@@ -243,7 +243,110 @@ class dks_ue_set_preferences(bpy.types.Operator):
         _dks_ue_prefs = bpy.context.preferences.addons[__package__].preferences
         _dks_ue_options = context.scene.dks_ue_options
 
+        _dks_ue_options.option_ue_src=_dks_ue_prefs.option_ue_src
+        _dks_ue_options.option_ue_dst=_dks_ue_prefs.option_ue_dst
+
+        _dks_ue_options.option_json_search=_dks_ue_prefs.option_json_search
+        _dks_ue_options.option_create_icon=_dks_ue_prefs.option_create_icon
+        _dks_ue_options.option_icon_resolution_x=_dks_ue_prefs.option_icon_resolution_x
+        _dks_ue_options.option_icon_resolution_y=_dks_ue_prefs.option_icon_resolution_y
+        _dks_ue_options.option_override_camera=_dks_ue_prefs.option_override_camera
+        _dks_ue_options.option_camera_location=_dks_ue_prefs.option_camera_location
+        _dks_ue_options.option_camera_rotation=_dks_ue_prefs.option_camera_rotation
+
+        _dks_ue_options.option_copy_textures=_dks_ue_prefs.option_copy_textures
+
+        return {'FINISHED'}
+
+class dks_ue_set_json_preferences(bpy.types.Operator):
+
+    bl_idname = "dks_ue.set_json_preferences"
+    bl_label = 'Set from "blender_addon_ue.json"'
+    bl_context = "scene"
+
+    def execute(self, context):
+
+        _dks_ue_prefs = bpy.context.preferences.addons[__package__].preferences
+        _dks_ue_options = context.scene.dks_ue_options
+
+        _file_name = bpy.context.blend_data.filepath
+        _file_path = _file_name[0:len(_file_name)-len(bpy.path.basename(_file_name))]
+
+        _file_json=dks_ue_folder_crawl(_file_path)
+        
+        if _file_json!="":
+                
+            try:
+                with open(_file_json) as _file_json_data:
+                    _preferences = json.load(_file_json_data)
+            except Exception as e:
+                print("blender_addon_ue.json is invalid: ",str(e.reason))
+                return {'FINISHED'}
+
+            if "option_ue_src" not in _preferences:
+                _preferences["option_ue_src"]=bpy.context.preferences.addons[__package__].preferences.option_ue_src
+            
+            if "option_ue_dst" not in _preferences:
+                _preferences["option_ue_dst"]=bpy.context.preferences.addons[__package__].preferences.option_ue_dst
+
+            if "option_create_icon" not in _preferences:
+                _preferences["option_create_icon"]=bpy.context.preferences.addons[__package__].preferences.option_create_icon
+
+            if "option_override_camera" not in _preferences:
+                _preferences["option_override_camera"]=bpy.context.preferences.addons[__package__].preferences.option_override_camera
+
+            if "option_icon_resolution_x" not in _preferences:
+                _preferences["option_icon_resolution_x"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_x
+
+            if "option_icon_resolution_y" not in _preferences:
+                _preferences["option_icon_resolution_y"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_y
+
+            if "option_camera_location" in _preferences:
+                _preferences["option_camera_location"]=(_preferences["option_camera_location"]["x"],_preferences["option_camera_location"]["y"],_preferences["option_camera_location"]["z"])
+            else:
+                _preferences["option_camera_location"] = bpy.context.preferences.addons[__package__].preferences.option_camera_location
+
+            if "option_camera_rotation" in _preferences:
+                _preferences["option_camera_rotation"]=(math.radians(_preferences["option_camera_rotation"]["x"]),math.radians(_preferences["option_camera_rotation"]["y"]),math.radians(_preferences["option_camera_rotation"]["z"]))
+            else:
+                _preferences["option_camera_rotation"] = (math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[0]),math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[1]),math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[2]))
+
+            if "option_create_icon" not in _preferences:
+                _preferences["option_create_icon"]=bpy.context.preferences.addons[__package__].preferences.option_create_icon
+
+            if "option_textures_folder" not in _preferences:
+                _preferences["option_textures_folder"]=bpy.context.preferences.addons[__package__].preferences.option_textures_folder
+
+            if "option_ue_json" not in _preferences:
+                _preferences["option_ue_json"]=bpy.context.preferences.addons[__package__].preferences.option_ue_json
+
+            _dks_ue_options.option_ue_src=_preferences["option_ue_src"]
+            _dks_ue_options.option_ue_dst=_preferences["option_ue_dst"]
+
+            _dks_ue_options.option_create_icon=_preferences["option_create_icon"]
+            _dks_ue_options.option_icon_resolution_x=_preferences["option_icon_resolution_x"]
+            _dks_ue_options.option_icon_resolution_y=_preferences["option_icon_resolution_y"]
+            _dks_ue_options.option_override_camera=_preferences["option_override_camera"]
+            _dks_ue_options.option_camera_location=_preferences["option_camera_location"]
+            _dks_ue_options.option_camera_rotation=_preferences["option_camera_rotation"]
+
+            _dks_ue_options.option_copy_textures=_preferences["option_copy_textures"]
+
+        return {'FINISHED'}
+
+class dks_ue_set_ue_preferences(bpy.types.Operator):
+
+    bl_idname = "dks_ue.set_ue_preferences"
+    bl_label = "Set from Preferences"
+    bl_context = "scene"
+
+    def execute(self, context):
+
+        _dks_ue_prefs = bpy.context.preferences.addons[__package__].preferences
+        _dks_ue_options = context.scene.dks_ue_options
+
         _dks_ue_options.option_ue_json=_dks_ue_prefs.option_ue_json
+        _dks_ue_options.option_ue_auto=_dks_ue_prefs.option_ue_auto
 
         _dks_ue_options.ue_ImportMesh=_dks_ue_prefs.ue_ImportMesh
         _dks_ue_options.ue_ImportMaterials=_dks_ue_prefs.ue_ImportMaterials
@@ -272,9 +375,209 @@ class dks_ue_set_preferences(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class dks_ue_json_create(bpy.types.Operator):
+
+    bl_idname = "dks_ue.json_create"
+    bl_label = 'Create "blender_addon_ue.json"'
+    bl_context = "scene"
+
+    def execute(self, context):
+        
+        _dks_ue_options = context.scene.dks_ue_options
+
+        _json_data = {}
+
+        _json_data["option_ue_src"]=_dks_ue_options.option_ue_src
+        _json_data["option_ue_dst"]=_dks_ue_options.option_ue_dst
+        _json_data["option_create_icon"]=_dks_ue_options.option_create_icon
+        _json_data["option_override_camera"]=_dks_ue_options.option_override_camera
+        _json_data["option_icon_resolution_x"]=_dks_ue_options.option_icon_resolution_x
+        _json_data["option_icon_resolution_y"]=_dks_ue_options.option_icon_resolution_y
+        _json_data["option_camera_location"]={}
+        _json_data["option_camera_location"]["x"]=_dks_ue_options.option_camera_location[0]
+        _json_data["option_camera_location"]["y"]=_dks_ue_options.option_camera_location[1]
+        _json_data["option_camera_location"]["z"]=_dks_ue_options.option_camera_location[2]
+        _json_data["option_camera_rotation"]={}
+        _json_data["option_camera_rotation"]["x"]=_dks_ue_options.option_camera_rotation[0]
+        _json_data["option_camera_rotation"]["y"]=_dks_ue_options.option_camera_rotation[1]
+        _json_data["option_camera_rotation"]["z"]=_dks_ue_options.option_camera_rotation[2]
+        _json_data["option_copy_textures"]=_dks_ue_options.option_copy_textures
+
+        json_data_filename = bpy.path.abspath(_dks_ue_options.option_ue_json_folder)+"blender_addon_ue.json"
+
+        with open(json_data_filename, 'w') as f:
+            json.dump(_json_data, f)
+
+        return {'FINISHED'}
+
+class dks_ue_set_camera_location(bpy.types.Operator):
+
+    bl_idname = "dks_ue.set_camera_location"
+    bl_label = 'Set from Camera Location'
+    bl_context = "scene"
+
+    def execute(self, context):
+        
+        _dks_ue_options = context.scene.dks_ue_options
+        _dks_ue_options.option_camera_location=bpy.context.scene.camera.location
+
+        return {'FINISHED'}
+
+class dks_ue_set_camera_rotation(bpy.types.Operator):
+
+    bl_idname = "dks_ue.set_camera_rotation"
+    bl_label = 'Set from Camera Rotation'
+    bl_context = "scene"
+
+    def execute(self, context):
+        
+        _dks_ue_options = context.scene.dks_ue_options
+        _dks_ue_options.option_camera_rotation=bpy.context.scene.camera.rotation_euler
+
+        return {'FINISHED'}
+
 # UE Options Panel Properties
 
 class dks_ue_options(bpy.types.PropertyGroup):
+
+    # Preferences
+
+    def get_option_json_search(self):
+        if "_option_json_search" not in self:
+            self["_option_json_search"]=bpy.context.preferences.addons[__package__].preferences.option_json_search
+        return self["_option_json_search"]
+    def set_option_json_search(self, value):
+        self["_option_json_search"] = value
+
+    option_json_search : bpy.props.BoolProperty(
+            name='Search for "blender_addon_ue.json"',
+            get = get_option_json_search,
+            set = set_option_json_search                
+    )
+
+    def get_option_ue_src(self):
+        if ("_option_ue_src" not in self):
+            self["_option_ue_src"]=bpy.context.preferences.addons[__package__].preferences.option_ue_src
+        return self["_option_ue_src"]
+    def set_option_ue_src(self, value):
+        self["_option_ue_src"] = value
+
+    option_ue_src : bpy.props.StringProperty(
+            name="Source Root Folder",
+            subtype="DIR_PATH",
+            get = get_option_ue_src,
+            set = set_option_ue_src                 
+    )     
+
+    def get_option_ue_dst(self):
+        if ("_option_ue_dst" not in self):
+            self["_option_ue_dst"]=bpy.context.preferences.addons[__package__].preferences.option_ue_dst
+        return self["_option_ue_dst"]
+    def set_option_ue_dst(self, value):
+        self["_option_ue_dst"] = value
+
+    option_ue_dst : bpy.props.StringProperty(
+            name="Destination Root Folder",
+            subtype="DIR_PATH",
+            get = get_option_ue_dst,
+            set = set_option_ue_dst                 
+    )   
+
+    def get_option_create_icon(self):
+        if "_option_create_icon" not in self:
+            self["_option_create_icon"]=bpy.context.preferences.addons[__package__].preferences.option_create_icon
+        return self["_option_create_icon"]
+    def set_option_create_icon(self, value):
+        self["_option_create_icon"] = value
+
+    option_create_icon : bpy.props.BoolProperty(
+            name="Create Icon",
+            get = get_option_create_icon,
+            set = set_option_create_icon                 
+    )
+
+    def get_option_icon_resolution_x(self):
+        if "_option_icon_resolution_x" not in self:
+            self["_option_icon_resolution_x"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_x
+        return self["_option_icon_resolution_x"]
+    def set_option_icon_resolution_x(self, value):
+        self["_option_icon_resolution_x"] = value
+
+    option_icon_resolution_x : bpy.props.IntProperty(
+            name="Resolution Width",
+            get = get_option_icon_resolution_x,
+            set = set_option_icon_resolution_x                 
+    )        
+
+    def get_option_icon_resolution_y(self):
+        if "_option_icon_resolution_y" not in self:
+            self["_option_icon_resolution_y"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_y
+        return self["_option_icon_resolution_y"]
+    def set_option_icon_resolution_y(self, value):
+        self["_option_icon_resolution_y"] = value
+
+    option_icon_resolution_y : bpy.props.IntProperty(
+            name="Resolution Height",
+            get = get_option_icon_resolution_y,
+            set = set_option_icon_resolution_y                 
+    )        
+
+    def get_option_copy_textures(self):
+        if "_option_copy_textures" not in self:
+            self["_option_copy_textures"]=bpy.context.preferences.addons[__package__].preferences.option_copy_textures
+        return self["_option_copy_textures"]
+    def set_option_copy_textures(self, value):
+        self["_option_copy_textures"] = value
+
+    option_copy_textures : bpy.props.BoolProperty(
+            name="Copy Textures Folder",
+            get = get_option_copy_textures,
+            set = set_option_copy_textures                 
+    )
+
+    def get_option_override_camera(self):
+        if "_option_override_camera" not in self:
+            self["_option_override_camera"]=bpy.context.preferences.addons[__package__].preferences.option_override_camera
+        return self["_option_override_camera"]
+    def set_option_override_camera(self, value):
+        self["_option_override_camera"] = value
+
+    option_override_camera : bpy.props.BoolProperty(
+            name="Override Camera Location/Rotation",
+            get = get_option_override_camera,
+            set = set_option_override_camera                 
+    )
+
+    def get_option_camera_location(self):
+        if "_option_camera_location" not in self:
+            self["_option_camera_location"]=bpy.context.preferences.addons[__package__].preferences.option_camera_location
+        return self["_option_camera_location"]
+    def set_option_camera_location(self, value):
+        self["_option_camera_location"] = value
+
+    option_camera_location : bpy.props.FloatVectorProperty(
+            name="Camera Location",
+            get = get_option_camera_location,
+            set = set_option_camera_location                 
+    )                                            
+
+    def get_option_camera_rotation(self):
+        if "_option_camera_rotation" not in self:
+            self["_option_camera_rotation"]=bpy.context.preferences.addons[__package__].preferences.option_camera_rotation
+        return self["_option_camera_rotation"]
+    def set_option_camera_rotation(self, value):
+        self["_option_camera_rotation"] = value
+
+    option_camera_rotation : bpy.props.FloatVectorProperty(
+            name="Camera Rotation",
+            get = get_option_camera_rotation,
+            set = set_option_camera_rotation                 
+    ) 
+    
+    option_ue_json_folder : bpy.props.StringProperty(
+            name="Select Folder",
+            subtype="DIR_PATH",
+    )   
 
     # UE JSON Options >
 
@@ -289,6 +592,19 @@ class dks_ue_options(bpy.types.PropertyGroup):
             name="Create UE JSON",
             get = get_option_ue_json,
             set = set_option_ue_json            
+    )
+
+    def get_option_ue_auto(self):
+        if "_option_ue_auto" not in self:
+            self["_option_ue_auto"]=bpy.context.preferences.addons[__package__].preferences.option_ue_auto
+        return self["_option_ue_auto"]
+    def set_option_ue_auto(self, value):
+        self["_option_ue_auto"] = value
+
+    option_ue_auto : bpy.props.BoolProperty(
+            name="Auto UE Import",
+            get = get_option_ue_auto,
+            set = set_option_ue_auto            
     )
 
     # General
@@ -579,28 +895,66 @@ class PANEL_PT_dks_ue_options(bpy.types.Panel):
         _dks_ue_options = context.scene.dks_ue_options
 
         layout = self.layout
-        
-        box=layout.box()
+
+        box_prefs=layout.box()
+        box_prefs.label(text='Preferences',icon='SETTINGS') 
+
+        box=box_prefs.box()
         box.operator(dks_ue_set_preferences.bl_idname)
+        box.operator(dks_ue_set_json_preferences.bl_idname)
 
-        box=layout.box()
+        box=box_prefs.box()
+        box.prop(_dks_ue_options,"option_json_search")
+
+        box=box_prefs.box()
+        box.prop(_dks_ue_options,"option_ue_src")
+        box.prop(_dks_ue_options,"option_ue_dst")
+
+        box=box_prefs.box()
+        box.label(text='Icon',icon='RADIOBUT_ON')    
+        box.prop(_dks_ue_options,"option_create_icon")
+        box.prop(_dks_ue_options,"option_icon_resolution_x")
+        box.prop(_dks_ue_options,"option_icon_resolution_y")
+
+        box.prop(_dks_ue_options,"option_override_camera")
+        box.prop(_dks_ue_options,"option_camera_location")
+        box.operator(dks_ue_set_camera_location.bl_idname)
+        box.prop(_dks_ue_options,"option_camera_rotation")
+        box.operator(dks_ue_set_camera_rotation.bl_idname)
+        
+        box=box_prefs.box()
+        box.label(text='Textures',icon='RADIOBUT_ON')    
+        box.prop(_dks_ue_options,"option_copy_textures")
+
+        box=box_prefs.box()
+        box.prop(_dks_ue_options,"option_ue_json_folder")
+        box.operator(dks_ue_json_create.bl_idname)
+
+        box_fbx=layout.box()
+        box_fbx.label(text='FBX Import Options',icon='SETTINGS') 
+
+        box=box_fbx.box()
+        box.operator(dks_ue_set_ue_preferences.bl_idname)
+
+        box=box_fbx.box()
         box.prop(_dks_ue_options,"option_ue_json")
+        box.prop(_dks_ue_options,"option_ue_auto")
 
-        box=layout.box()
+        box=box_fbx.box()
         box.prop(_dks_ue_options,"ue_ImportMesh")
         box.prop(_dks_ue_options,"ue_ImportMaterials")
         box.prop(_dks_ue_options,"ue_ImportAnimations")
         box.prop(_dks_ue_options,"ue_CreatePhysicsAsset")
         box.prop(_dks_ue_options,"ue_AutoComputeLodDistances")
 
-        box=layout.box()
+        box=box_fbx.box()
         box.label(text='Static Mesh',icon='RADIOBUT_ON')    
         box.prop(_dks_ue_options,"ue_static_mesh_NormalImportMethod")
         box.prop(_dks_ue_options,"ue_static_mesh_ImportMeshLODs")
         box.prop(_dks_ue_options,"ue_static_mesh_CombineMeshes")
         box.prop(_dks_ue_options,"ue_static_mesh_AutoGenerateCollision")
 
-        box=layout.box()
+        box=box_fbx.box()
         box.label(text='Skeletal Mesh',icon='RADIOBUT_ON')
         box.prop(_dks_ue_options,"ue_skeletal_mesh_NormalImportMethod")
         box.prop(_dks_ue_options,"ue_skeletal_mesh_ImportMeshLODs")
@@ -608,7 +962,7 @@ class PANEL_PT_dks_ue_options(bpy.types.Panel):
         box.prop(_dks_ue_options,"ue_skeletal_mesh_PreserveSmoothingGroups")
         box.prop(_dks_ue_options,"ue_skeletal_mesh_ImportMorphTargets")
 
-        box=layout.box()
+        box=box_fbx.box()
         box.label(text='Animations',icon='RADIOBUT_ON')
         box.prop(_dks_ue_options,"ue_animation_AnimationLength")
         box.prop(_dks_ue_options,"ue_animation_FrameRangeMin")
@@ -631,6 +985,8 @@ class dks_ue_export(bpy.types.Operator):
         
         global _preferences
 
+        _dks_ue_options = context.scene.dks_ue_options
+
         if bpy.context.preferences.addons[__package__].preferences.option_save_before_export:
             bpy.ops.wm.save_mainfile()
 
@@ -649,55 +1005,55 @@ class dks_ue_export(bpy.types.Operator):
                 return {'FINISHED'}
             
             if "option_ue_src" not in _preferences:
-                _preferences["option_ue_src"]=bpy.context.preferences.addons[__package__].preferences.option_ue_src
+                _preferences["option_ue_src"]=_dks_ue_options.option_ue_src
             
             if "option_ue_dst" not in _preferences:
-                _preferences["option_ue_dst"]=bpy.context.preferences.addons[__package__].preferences.option_ue_dst
+                _preferences["option_ue_dst"]=_dks_ue_options.option_ue_dst
 
             if "option_create_icon" not in _preferences:
-                _preferences["option_create_icon"]=bpy.context.preferences.addons[__package__].preferences.option_create_icon
+                _preferences["option_create_icon"]=_dks_ue_options.option_create_icon
 
             if "option_override_camera" not in _preferences:
-                _preferences["option_override_camera"]=bpy.context.preferences.addons[__package__].preferences.option_override_camera
+                _preferences["option_override_camera"]=_dks_ue_options.option_override_camera
 
             if "option_icon_resolution_x" not in _preferences:
-                _preferences["option_icon_resolution_x"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_x
+                _preferences["option_icon_resolution_x"]=_dks_ue_options.option_icon_resolution_x
 
             if "option_icon_resolution_y" not in _preferences:
-                _preferences["option_icon_resolution_y"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_y
+                _preferences["option_icon_resolution_y"]=_dks_ue_options.option_icon_resolution_y
 
             if "option_camera_location" in _preferences:
                 _preferences["option_camera_location"]=(_preferences["option_camera_location"]["x"],_preferences["option_camera_location"]["y"],_preferences["option_camera_location"]["z"])
             else:
-                _preferences["option_camera_location"] = bpy.context.preferences.addons[__package__].preferences.option_camera_location
+                _preferences["option_camera_location"] = _dks_ue_options.option_camera_location
 
             if "option_camera_rotation" in _preferences:
                 _preferences["option_camera_rotation"]=(math.radians(_preferences["option_camera_rotation"]["x"]),math.radians(_preferences["option_camera_rotation"]["y"]),math.radians(_preferences["option_camera_rotation"]["z"]))
             else:
-                _preferences["option_camera_rotation"] = (math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[0]),math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[1]),math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[2]))
+                _preferences["option_camera_rotation"] = (math.radians(_dks_ue_options.option_camera_rotation[0]),math.radians(_dks_ue_options.option_camera_rotation[1]),math.radians(_dks_ue_options.option_camera_rotation[2]))
 
             if "option_create_icon" not in _preferences:
-                _preferences["option_create_icon"]=bpy.context.preferences.addons[__package__].preferences.option_create_icon
+                _preferences["option_create_icon"]=_dks_ue_options.option_create_icon
 
             if "option_textures_folder" not in _preferences:
                 _preferences["option_textures_folder"]=bpy.context.preferences.addons[__package__].preferences.option_textures_folder
 
             if "option_ue_json" not in _preferences:
-                _preferences["option_ue_json"]=bpy.context.preferences.addons[__package__].preferences.option_ue_json
+                _preferences["option_ue_json"]=_dks_ue_options.option_ue_json
 
         else:
 
-            _preferences["option_ue_src"]=bpy.context.preferences.addons[__package__].preferences.option_ue_src
-            _preferences["option_ue_dst"]=bpy.context.preferences.addons[__package__].preferences.option_ue_dst
-            _preferences["option_create_icon"]=bpy.context.preferences.addons[__package__].preferences.option_create_icon
-            _preferences["option_override_camera"]=bpy.context.preferences.addons[__package__].preferences.option_override_camera
-            _preferences["option_icon_resolution_x"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_x
-            _preferences["option_icon_resolution_y"]=bpy.context.preferences.addons[__package__].preferences.option_icon_resolution_y
-            _preferences["option_camera_location"] = bpy.context.preferences.addons[__package__].preferences.option_camera_location
-            _preferences["option_camera_rotation"] = (math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[0]),math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[1]),math.radians(bpy.context.preferences.addons[__package__].preferences.option_camera_rotation[2]))
-            _preferences["option_copy_textures"]=bpy.context.preferences.addons[__package__].preferences.option_copy_textures
+            _preferences["option_ue_src"]=_dks_ue_options.option_ue_src
+            _preferences["option_ue_dst"]=_dks_ue_options.option_ue_dst
+            _preferences["option_create_icon"]=_dks_ue_options.option_create_icon
+            _preferences["option_override_camera"]=_dks_ue_options.option_override_camera
+            _preferences["option_icon_resolution_x"]=_dks_ue_options.option_icon_resolution_x
+            _preferences["option_icon_resolution_y"]=_dks_ue_options.option_icon_resolution_y
+            _preferences["option_camera_location"]=_dks_ue_options.option_camera_location
+            _preferences["option_camera_rotation"]=_dks_ue_options.option_camera_rotation
+            _preferences["option_copy_textures"]=_dks_ue_options.option_copy_textures
             _preferences["option_textures_folder"]=bpy.context.preferences.addons[__package__].preferences.option_textures_folder
-            _preferences["option_ue_json"]=bpy.context.preferences.addons[__package__].preferences.option_ue_json
+            _preferences["option_ue_json"]=_dks_ue_options.option_ue_json
 
         if _preferences["option_create_icon"]:
 
@@ -713,7 +1069,7 @@ class dks_ue_export(bpy.types.Operator):
 
         _export_file = dks_ue_fbx_export(self, context)
 
-        if _preferences["option_ue_json"]:
+        if _dks_ue_options.option_ue_json:
 
             dks_ue_create_bjd(self, context)
         
@@ -723,6 +1079,11 @@ classes = (
     dks_ue_export,
     dks_ue_options,
     dks_ue_set_preferences,
+    dks_ue_set_json_preferences,
+    dks_ue_set_ue_preferences,
+    dks_ue_json_create,
+    dks_ue_set_camera_location,
+    dks_ue_set_camera_rotation,
     PANEL_PT_dks_ue_options,
 )
 

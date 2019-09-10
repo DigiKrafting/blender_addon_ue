@@ -20,7 +20,7 @@ bl_info = {
         "name": "DKS UE",
         "description": "Export to UE",
         "author": "DigiKrafting.Studio",
-        "version": (0, 7, 0),
+        "version": (0, 8, 0),
         "blender": (2, 80, 0),
         "location": "Info Toolbar, File -> Export",
         "wiki_url":    "https://github.com/DigiKrafting/blender_addon_ue/wiki",
@@ -88,6 +88,14 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
         option_ue_json : bpy.props.BoolProperty(
                 name="Create UE JSON",
                 default=False,
+        )
+        option_ue_auto : bpy.props.BoolProperty(
+                name="Auto UE Import",
+                default=True,
+        )
+        option_json_search : bpy.props.BoolProperty(
+                name='Search for "blender_addon_ue.json"',
+                default=True,
         )
 
         # UE JSON Options >
@@ -200,24 +208,32 @@ class dks_ue_addon_prefs(bpy.types.AddonPreferences):
                 box=layout.box()
                 box.prop(self, 'option_display_type')
                 box.prop(self, 'option_save_before_export')
+                
                 box=layout.box()
                 box.prop(self, 'option_ue_src')
                 box.prop(self, 'option_ue_dst')
+                
                 box=layout.box()
                 box.prop(self, 'option_textures_folder')
                 box.label(text='Sub folder relative to the saved .blend file. * Do NOT include any "\\".',icon='INFO')
+                
                 box=layout.box()
+                box.label(text='Icon',icon='RADIOBUT_ON')    
                 box.prop(self, 'option_create_icon')
                 box.prop(self, 'option_icon_resolution_x')
                 box.prop(self, 'option_icon_resolution_y')                
                 box.prop(self, 'option_override_camera')
                 box.prop(self, 'option_camera_location')
                 box.prop(self, 'option_camera_rotation')
+
                 box=layout.box()
+                box.label(text='Textures',icon='RADIOBUT_ON')    
                 box.prop(self, 'option_copy_textures')
 
                 box=layout.box()
+                box.label(text='FBX Import Options',icon='SETTINGS') 
                 box.prop(self, 'option_ue_json')
+                box.prop(self, 'option_ue_auto')
                 
                 box_sub=box.box()
                 box_sub.prop(self, 'ue_ImportMesh')
@@ -261,7 +277,7 @@ class dks_ue_menu(bpy.types.Menu):
             
         layout = self.layout
 
-        self.layout.operator('dks_ue.export',icon="EXPORT")
+        layout.operator('dks_ue.export',icon="EXPORT")
 
 def draw_dks_ue_menu(self, context):
 
