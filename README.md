@@ -11,6 +11,7 @@ Blender Unreal Engine Exporter.
 - Option to Copy Textures Folder
 - Option to override preferences (Useful for a per project setup, see "Overriding Preferences" below)
 - Option to create a "{fbx_file_name}.bjd" for the UE Plugin https://github.com/DigiKrafting/ue_plugin_blender (* ALPHA)
+- Preferences Panel for per blend file UE options in Properies->Output  (See "Output Preferences Panel" screenshot below).
 
 # Roadmap
 
