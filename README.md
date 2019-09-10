@@ -42,15 +42,21 @@ Should work in any version that supports FBX import.
 
 \* The children/sub folders will be created automatically based on the blender file location in your folder hierarchy. (E.g. "C:\Users\kye\Documents\Assets\DigiKrafting\Content\Meshes\Logo\Logo.blend" will create "C:\Users\kye\Documents\Unreal Projects\DigiKrafting\Content\Meshes\Logo\Logo.fbx")
 
+\* [Properties]->[Output]->[UE Options] Preferences overide the "Addon Preferences".
+
+# Unreal Engine Editor Import Dialog
+
+Untick the option "Auto UE Import" for the default FBX Import Dialog window to show.
+
 # Overriding Preferences 
 
 \* This negates the need for a tool panel with config options if your working on several projects and preserves my beloved "one click" preference for my addons.
 
-1. Set desired options in [Properties]->[Output]->[UE Options], select a folder and click [Create "blender_addon_ue.json"].
+- Set desired options in [Properties]->[Output]->[UE Options], select a folder and click [Create "blender_addon_ue.json"]. (See "Output Preferences Panel" screenshot below)
 
 OR
 
-2. Create a text file named blender_addon_ue.json in your source project folder, mesh folder or both for preferences for different model types, the addon will search recursively in reverse through the folder hierarchy back to the root folder of your drive for any "blender_addon_ue.json", so don't create it in "c:\blender_addon_ue.json" or "/blender_addon_ue.json".
+- Create a text file named blender_addon_ue.json in your source project folder, mesh folder or both for preferences for different model types, the addon will search recursively in reverse through the folder hierarchy back to the root folder of your drive for any "blender_addon_ue.json", so don't create it in "c:\blender_addon_ue.json" or "/blender_addon_ue.json".
 
 ### blender_addon_ue.json
 
@@ -80,7 +86,7 @@ For example you could have:
 }
 ~~~
 
-\* For a per project based setup be sure to set at least "option_ue_src" and "option_ue_dst".
+\* For a per project based setup be sure to set at least "option_ue_src" and "option_ue_dst" or the folders will be set from the preferences.
 
 # Installation
 
