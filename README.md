@@ -2,6 +2,8 @@
 
 Blender Unreal Engine Exporter.
 
+\* For feedback or suggestions please use https://forums.unrealengine.com/community/community-content-tools-and-tutorials/1662419-blender-addon-unreal-editor-plugin-combo.
+
 # Features
 
 - One click FBX Export to UE
