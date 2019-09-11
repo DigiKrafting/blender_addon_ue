@@ -2,15 +2,13 @@
 
 Blender Unreal Engine Exporter.
 
-\* WIP, I've created this addon to automate the export of meshes, automatically create icons for weapons/items/etc and copy textures.
-
 # Features
 
 - One click FBX Export to UE
 - Option to Create Icon (Useful for toolbar items/etc)
 - Option to Copy Textures Folder
 - Option to override preferences (Useful for a per project setup, see "Overriding Preferences" below)
-- Option to create a "{fbx_file_name}.bjd" for the UE Plugin https://github.com/DigiKrafting/ue_plugin_blender (* ALPHA)
+- Option to create a "{fbx_file_name}.bjd" for the UE Plugin https://github.com/DigiKrafting/ue_plugin_blender
 - Preferences Panel for per blend file UE options in [Properies]->[Output]->[UE Options] (See "Output Preferences Panel" screenshot below).
 
 # Roadmap
