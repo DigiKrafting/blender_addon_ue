@@ -1,6 +1,6 @@
 # Blender Addon UE
 
-Blender Unreal Engine Exporter.
+Blender Unreal Engine Exporter. Designed to work the Ureal Engine Editor Plugin https://github.com/DigiKrafting/ue_plugin_blender.
 
 \* For feedback or suggestions please use https://forums.unrealengine.com/community/community-content-tools-and-tutorials/1662419-blender-addon-unreal-editor-plugin-combo.
 
