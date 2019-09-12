@@ -20,7 +20,7 @@ bl_info = {
         "name": "DKS UE",
         "description": "Export to UE",
         "author": "DigiKrafting.Studio",
-        "version": (0, 8, 1),
+        "version": (0, 8, 2),
         "blender": (2, 80, 0),
         "location": "Info Toolbar, File -> Export",
         "wiki_url":    "https://github.com/DigiKrafting/blender_addon_ue/wiki",
