@@ -993,8 +993,14 @@ class dks_ue_export(bpy.types.Operator):
         _file_name = bpy.context.blend_data.filepath
         _file_path = _file_name[0:len(_file_name)-len(bpy.path.basename(_file_name))]
         
-        _file_json=dks_ue_folder_crawl(_file_path)
+        if _dks_ue_options.option_json_search:
+
+            _file_json=dks_ue_folder_crawl(_file_path)
         
+        else:
+        
+            _file_json=""
+
         if _file_json!="":
                 
             try:
